@@ -29,6 +29,7 @@ private:
 public:
     BBST();
     ~BBST();
+    void clear();
 };
 
 // -------------------------------------------------------------------------
@@ -78,9 +79,17 @@ void BBST<T>::destroy(Node<T>* node)
     }
 }
 
+template<typename T>
+void BBST<T>::clear()
+{
+    destroy(root);
+    root = nullptr;
+}
+
 int main()
 {
     BBST<int> tree;
+    tree.clear();
     std::cout << "Good" << std::endl;
 
     return 0;
