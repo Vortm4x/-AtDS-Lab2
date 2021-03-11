@@ -15,6 +15,20 @@ struct Node
 	Node(const T& data = T(), Node<T> *const left = nullptr, Node<T> *const right = nullptr);
 };
 
+// --------------------------
+//  class BBST<T>
+//  <DESCRIPTION NOT READY>
+// --------------------------
+template<typename T>
+class BBST
+{
+private:
+    Node<T>* root;
+
+public:
+    BBST();
+};
+
 // -------------------------------------------------------------------------
 //  Node<T>::Node(const T& data, Node<T> *const left, Node<T> *const right)
 //  Node constructor  with default params
@@ -22,13 +36,24 @@ struct Node
 template<typename T>
 Node<T>::Node(const T& data, Node<T> *const left, Node<T> *const right)
 {
-        this->data = data;
-        this->left = left;
-        this->right = right;
+    this->data = data;
+    this->left = left;
+    this->right = right;
+}
+
+// ------------------
+//  BBST<T>::BBST()
+//  BBST constructor
+// ------------------
+template<typename T>
+BBST<T>::BBST()
+{
+    root = nullptr;
 }
 
 int main()
 {
+    BBST<int> tree;
     std::cout << "Good" << std::endl;
 
     return 0;
