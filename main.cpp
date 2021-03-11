@@ -24,6 +24,7 @@ class BBST
 {
 private:
     Node<T>* root;
+    void destroy(Node<T>* node);
 
 public:
     BBST();
@@ -49,6 +50,21 @@ template<typename T>
 BBST<T>::BBST()
 {
     root = nullptr;
+}
+
+// ----------------------------------------
+//  void BBST<T>::destroy(Node<T>* node)
+//  Deletes a subtree including given node
+// ----------------------------------------
+template<typename T>
+void BBST<T>::destroy(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        destroy(node->left);
+        destroy(node->right);
+        delete node;
+    }
 }
 
 int main()
