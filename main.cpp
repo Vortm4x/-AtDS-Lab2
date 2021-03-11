@@ -28,6 +28,7 @@ private:
 
 public:
     BBST();
+    ~BBST();
 };
 
 // -------------------------------------------------------------------------
@@ -50,6 +51,16 @@ template<typename T>
 BBST<T>::BBST()
 {
     root = nullptr;
+}
+
+// ------------------
+//  BBST<T>::~BBST()
+//  BBST constructor
+// ------------------
+template<typename T>
+BBST<T>::~BBST()
+{
+    destroy(root);
 }
 
 // ----------------------------------------
