@@ -30,6 +30,7 @@ public:
     BBST();
     ~BBST();
     void clear();
+    void add(const T& data);
 };
 
 // -------------------------------------------------------------------------
@@ -86,10 +87,48 @@ void BBST<T>::clear()
     root = nullptr;
 }
 
+template<typename T>
+void BBST<T>::add(const T& data)
+{
+    Node<T>* current = nullptr;
+    Node<T>* following = root;
+
+    while(following != nullptr)
+    {
+        current = following;
+        following = (following->data > data) ? following->left : following->right;
+    }
+
+    if(current == nullptr)
+    {
+        root = new Node<T>(data);
+    }
+    else
+    {
+        if(current->left == following)
+        {
+            current->left = new Node<T>(data);
+        }
+        else
+        {
+            current->right = new Node<T>(data);
+        }
+    }
+}
+
+
 int main()
 {
     BBST<int> tree;
-    tree.clear();
+
+    tree.add(10);
+
+    for(int i = 1; i < 4; ++i)
+    {
+        tree.add(10 + i);
+        tree.add(10 - i);
+    }
+
     std::cout << "Good" << std::endl;
 
     return 0;
