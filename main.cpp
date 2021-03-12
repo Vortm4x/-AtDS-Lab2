@@ -26,6 +26,7 @@ private:
     Node<T>* root;
     void destroy(Node<T>* node);
     void print_preorder(Node<T>* node);
+    void print_inorder(Node<T>* node);
 
 public:
     BBST();
@@ -35,6 +36,11 @@ public:
     void print_preorder()
     {
         print_preorder(root);
+        std::cout << std::endl;
+    }
+    void print_inorder()
+    {
+        print_inorder(root);
         std::cout << std::endl;
     }
 };
@@ -105,6 +111,17 @@ void BBST<T>::print_preorder(Node<T>* node)
 }
 
 template<typename T>
+void BBST<T>::print_inorder(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        print_inorder(node->left);
+        std::cout << node->data << ", ";
+        print_inorder(node->right);
+    }
+}
+
+template<typename T>
 void BBST<T>::add(const T& data)
 {
     Node<T>* current = nullptr;
@@ -147,6 +164,7 @@ int main()
     }
 
     tree.print_preorder();
+    tree.print_inorder();
 
     std::cout << "Good" << std::endl;
 
