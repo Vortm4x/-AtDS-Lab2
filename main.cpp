@@ -28,12 +28,18 @@ private:
     void print_preorder(Node<T>* node);
     void print_inorder(Node<T>* node);
     void print_postorder(Node<T>* node);
+    Node<T>* search(const T& data, Node<T>* node);
 
 public:
     BBST();
     ~BBST();
     void clear();
     void add(const T& data);
+
+    bool search(const T& data)
+    {
+        return search(data, root) != nullptr;
+    }
 
     void print_preorder()
     {
@@ -142,6 +148,23 @@ void BBST<T>::print_postorder(Node<T>* node)
 }
 
 template<typename T>
+Node<T>* BBST<T>::search(const T& data, Node<T>* node)
+{
+    if(node == nullptr)
+    {
+        return node;
+    }
+    else if(node->data == data)
+    {
+        return node;
+    }
+    else
+    {
+        return search(data, (node->data > data) ? node->left : node->right);
+    }
+}
+
+template<typename T>
 void BBST<T>::add(const T& data)
 {
     Node<T>* current = nullptr;
@@ -186,6 +209,8 @@ int main()
     tree.print_preorder();
     tree.print_inorder();
     tree.print_postorder();
+
+    std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
 
     std::cout << "Good" << std::endl;
 
