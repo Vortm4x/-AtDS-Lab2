@@ -34,6 +34,11 @@ public:
     BBST();
     ~BBST();
     void clear();
+    bool isEmpty()
+    {
+        return root == nullptr
+    }
+
     void add(const T& data);
 
     bool search(const T& data)
