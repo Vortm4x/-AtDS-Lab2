@@ -28,22 +28,23 @@ private:
     void print_preorder(Node<T>* node);
     void print_inorder(Node<T>* node);
     void print_postorder(Node<T>* node);
-    Node<T>* search(const T& data, Node<T>* node);
+    void add(const T& data, Node<T>* node);
+    bool search(const T& data, Node<T>* node);
 
 public:
     BBST();
     ~BBST();
     void clear();
+    void add(const T& data);
+
     bool isEmpty()
     {
-        return root == nullptr
+        return root == nullptr;
     }
-
-    void add(const T& data);
 
     bool search(const T& data)
     {
-        return search(data, root) != nullptr;
+        return search(data, root);
     }
 
     void print_preorder()
@@ -120,6 +121,46 @@ void BBST<T>::clear()
 }
 
 template<typename T>
+void BBST<T>::add(const T& data)
+{
+    if(isEmpty())
+    {
+        root = new Node<T>(data);
+    }
+    else
+    {
+        add(data, root);
+    }
+}
+
+template<typename T>
+void BBST<T>::add(const T& data, Node<T>* node)
+{
+    if(data < node->data)
+    {
+        if(node->left == nullptr)
+        {
+            node->left = new Node<T>(data);
+        }
+        else
+        {
+            add(data, node->left);
+        }
+    }
+    else
+    {
+        if(node->right == nullptr)
+        {
+            node->right = new Node<T>(data);
+        }
+        else
+        {
+            add(data, node->right);
+        }
+    }
+}
+
+template<typename T>
 void BBST<T>::print_preorder(Node<T>* node)
 {
     if(node != nullptr)
@@ -153,51 +194,21 @@ void BBST<T>::print_postorder(Node<T>* node)
 }
 
 template<typename T>
-Node<T>* BBST<T>::search(const T& data, Node<T>* node)
+bool BBST<T>::search(const T& data, Node<T>* node)
 {
     if(node == nullptr)
     {
-        return node;
+        return false;
     }
     else if(node->data == data)
     {
-        return node;
+        return true;
     }
     else
     {
         return search(data, (node->data > data) ? node->left : node->right);
     }
 }
-
-template<typename T>
-void BBST<T>::add(const T& data)
-{
-    Node<T>* current = nullptr;
-    Node<T>* following = root;
-
-    while(following != nullptr)
-    {
-        current = following;
-        following = (following->data > data) ? following->left : following->right;
-    }
-
-    if(current == nullptr)
-    {
-        root = new Node<T>(data);
-    }
-    else
-    {
-        if(current->left == following)
-        {
-            current->left = new Node<T>(data);
-        }
-        else
-        {
-            current->right = new Node<T>(data);
-        }
-    }
-}
-
 
 int main()
 {
