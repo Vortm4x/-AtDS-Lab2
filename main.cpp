@@ -28,13 +28,27 @@ private:
     void print_ascending(Node<T>* node);
     void print_descending(Node<T>* node);
     void add(const T& data, Node<T>* node);
+    void remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
 
 public:
     BBST();
     ~BBST();
     void clear();
-    void add(const T& data);
+
+    void add(const T& data)
+    {
+        if(isEmpty())
+        {
+            root = new Node<T>(data);
+        }
+        else
+        {
+            add(data, root);
+        }
+
+        //balance
+    }
 
     bool isEmpty()
     {
@@ -111,19 +125,6 @@ void BBST<T>::clear()
 }
 
 template<typename T>
-void BBST<T>::add(const T& data)
-{
-    if(isEmpty())
-    {
-        root = new Node<T>(data);
-    }
-    else
-    {
-        add(data, root);
-    }
-}
-
-template<typename T>
 void BBST<T>::add(const T& data, Node<T>* node)
 {
     if(data < node->data)
@@ -148,8 +149,80 @@ void BBST<T>::add(const T& data, Node<T>* node)
             add(data, node->right);
         }
     }
+}
+
+template<typename T>
+T BBST<T>::remove(const T& data)
+{
+    remove(data, root);
 
     //balance
+}
+
+template<typename T>
+Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
+{
+    if(data < node->data)
+    {
+        if(node->left != nullptr)
+        {
+            if(node->left == data)
+            {
+                Node<T>* temp = node->left;
+                node = remove(data, node->left);
+                return temp;
+            }
+            else
+            {
+                return remove(data, node->left);
+            }
+        }
+        else
+        {
+            return nullptr;
+        }
+
+    }
+    else if(data > node->data)
+    {
+        if(node->right != nullptr)
+        {
+            if(node->right == data)
+            {
+                Node<T>* temp = node->right;
+                node = remove(data, node->right);
+                return temp;
+            }
+            else
+            {
+                return remove(data, node->right);
+            }
+
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    else
+    {
+        if( (node->left == nullptr) && (node->left == nullptr) )
+        {
+            return nullptr;
+        }
+        else if(node->left == nullptr)
+        {
+            return node->right;
+        }
+        else if(node->right == nullptr)
+        {
+            return node->left;
+        }
+        else
+        {
+            return node;
+        }
+    }
 }
 
 template<typename T>
