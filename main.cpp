@@ -28,13 +28,16 @@ private:
     void print_ascending(Node<T>* node);
     void print_descending(Node<T>* node);
     void add(const T& data, Node<T>* node);
-    void remove(const T& data, Node<T>* node);
+    Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
+    T findMax(Node<T>* node);
+    T findMin(Node<T>* node);
 
 public:
     BBST();
     ~BBST();
     void clear();
+    T remove(const T& data);
 
     void add(const T& data)
     {
@@ -265,6 +268,19 @@ bool BBST<T>::search(const T& data, Node<T>* node)
 }
 
 template<typename T>
+T BBST<T>::findMax(Node<T>* node)
+{
+    Node<T> current = node;
+
+    while(node != nullptr)
+    {
+        node = node->right;
+    }
+
+    return node->data;
+}
+
+template<typename T>
 T BBST<T>::findMin(Node<T>* node)
 {
     Node<T> current = node;
@@ -276,6 +292,8 @@ T BBST<T>::findMin(Node<T>* node)
 
     return node->data;
 }
+
+
 
 int main()
 {
