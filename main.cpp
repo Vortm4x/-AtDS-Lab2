@@ -264,6 +264,19 @@ bool BBST<T>::search(const T& data, Node<T>* node)
     }
 }
 
+template<typename T>
+T BBST<T>::findMin(Node<T>* node)
+{
+    Node<T> current = node;
+
+    while(node != nullptr)
+    {
+        node = node->left;
+    }
+
+    return node->data;
+}
+
 int main()
 {
     BBST<int> tree;
