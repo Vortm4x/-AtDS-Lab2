@@ -25,9 +25,8 @@ class BBST
 private:
     Node<T>* root;
     void destroy(Node<T>* node);
-    void print_preorder(Node<T>* node);
-    void print_inorder(Node<T>* node);
-    void print_postorder(Node<T>* node);
+    void print_ascending(Node<T>* node);
+    void print_descending(Node<T>* node);
     void add(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
 
@@ -47,21 +46,12 @@ public:
         return search(data, root);
     }
 
-    void print_preorder()
+    void print_sorted()
     {
-        print_preorder(root);
+        print_ascending(root);
         std::cout << std::endl;
-    }
 
-    void print_inorder()
-    {
-        print_inorder(root);
-        std::cout << std::endl;
-    }
-
-    void print_postorder()
-    {
-        print_postorder(root);
+        print_descending(root);
         std::cout << std::endl;
     }
 };
@@ -147,7 +137,7 @@ void BBST<T>::add(const T& data, Node<T>* node)
             add(data, node->left);
         }
     }
-    else
+    else if(data > node->data)
     {
         if(node->right == nullptr)
         {
@@ -158,38 +148,29 @@ void BBST<T>::add(const T& data, Node<T>* node)
             add(data, node->right);
         }
     }
+
+    //balance
 }
 
 template<typename T>
-void BBST<T>::print_preorder(Node<T>* node)
+void BBST<T>::print_ascending(Node<T>* node)
 {
     if(node != nullptr)
     {
+        print_ascending(node->left);
         std::cout << node->data << ", ";
-        print_preorder(node->left);
-        print_preorder(node->right);
+        print_ascending(node->right);
     }
 }
 
 template<typename T>
-void BBST<T>::print_inorder(Node<T>* node)
+void BBST<T>::print_descending(Node<T>* node)
 {
     if(node != nullptr)
     {
-        print_inorder(node->left);
+        print_descending(node->right);
         std::cout << node->data << ", ";
-        print_inorder(node->right);
-    }
-}
-
-template<typename T>
-void BBST<T>::print_postorder(Node<T>* node)
-{
-    if(node != nullptr)
-    {
-        print_postorder(node->left);
-        print_postorder(node->right);
-        std::cout << node->data << ", ";
+        print_descending(node->left);
     }
 }
 
@@ -222,9 +203,9 @@ int main()
         tree.add(10 - i);
     }
 
-    tree.print_preorder();
-    tree.print_inorder();
-    tree.print_postorder();
+    tree.add(10);
+
+    tree.print_sorted();
 
     std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
 
