@@ -30,6 +30,7 @@ private:
     void add(const T& data, Node<T>* node);
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
+    int countNodes(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
 
@@ -75,6 +76,11 @@ public:
 
         print_descending(root);
         std::cout << std::endl;
+    }
+
+    int countNodes()
+    {
+        return countNodes(root);
     }
 };
 
@@ -229,6 +235,26 @@ Node<T>* BBST<T>::findMax(Node<T>* node)
 }
 
 template<typename T>
+int BBST<T>::countNodes(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        if(node->left != nullptr)
+        {
+            return 1 + countNodes(node->left) + countNodes(node->right);
+        }
+        else
+        {
+            return countNodes(node->right);
+        }
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
 {
     if(node != nullptr)
@@ -290,6 +316,7 @@ int main()
     tree.remove(5);
 
     tree.print_sorted();
+    std::cout << tree.countNodes() << '\n';
 
     std::cout << "Good" << std::endl;
 
