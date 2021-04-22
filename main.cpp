@@ -34,12 +34,18 @@ private:
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
+    inline T abs(const T& data)
+    {
+        return (data < 0) ? -data : data;
+    }
     Node<T>* findSecondLargest(Node<T>* node);
+
 
 public:
     BBST();
     ~BBST();
     void clear();
+    T findMiddle();
     void remove(const T& data)
     {
         root = remove(data, root);
@@ -116,6 +122,8 @@ public:
             return T();
         }
     }
+
+
 };
 
 // -------------------------------------------------------------------------
@@ -258,7 +266,7 @@ Node<T>* BBST<T>::findMin(Node<T>* node)
 template<typename T>
 Node<T>* BBST<T>::findMax(Node<T>* node)
 {
-    Node<T> current = node;
+    Node<T>* current = node;
 
     while(node->right != nullptr)
     {
@@ -322,6 +330,39 @@ Node<T>* BBST<T>::findSecondLargest(Node<T>* node)
 }
 
 template<typename T>
+T BBST<T>::findMiddle()
+{
+    if(root != nullptr)
+    {
+        T minDist = (findMax(root))->data;
+        T currDist = (findMin(root))->data;
+        T middle = (minDist + currDist) / 2;
+
+        Node<T>* current = root;
+
+        while(current != nullptr)
+        {
+            int currDist = current->data - middle;
+            minDist = (abs(currDist) < abs(minDist)) ? currDist : minDist;
+
+            if(minDist == 0)
+            {
+                break;
+            }
+
+            current = (middle < current->data) ? current->left : current->right;
+        }
+
+        return middle + minDist;
+
+    }
+    else
+    {
+        return T();
+    }
+}
+
+template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
 {
     if(node != nullptr)
@@ -379,6 +420,7 @@ int main()
     std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
 
     std::cout << tree.findSecondLargest() << '\n';
+    std::cout << tree.findMiddle() << '\n';
 
     tree.remove(12);
     tree.remove(8);
@@ -388,6 +430,9 @@ int main()
     std::cout << tree.countNode() << '\n';
     std::cout << tree.sumKeys() << '\n';
     std::cout << tree.findSecondLargest() << '\n';
+
+
+
 
     std::cout << "Good" << std::endl;
 
