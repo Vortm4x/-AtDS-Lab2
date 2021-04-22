@@ -30,14 +30,19 @@ private:
     void add(const T& data, Node<T>* node);
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
-    T findMax(Node<T>* node);
-    T findMin(Node<T>* node);
+    Node<T>* findMin(Node<T>* node);
+    Node<T>* findMax(Node<T>* node);
 
 public:
     BBST();
     ~BBST();
     void clear();
-    T remove(const T& data);
+    void remove(const T& data)
+    {
+        root = remove(data, root);
+
+        //balance
+    }
 
     void add(const T& data)
     {
@@ -155,77 +160,72 @@ void BBST<T>::add(const T& data, Node<T>* node)
 }
 
 template<typename T>
-T BBST<T>::remove(const T& data)
-{
-    remove(data, root);
-
-    //balance
-}
-
-template<typename T>
 Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
 {
-    if(data < node->data)
+    if(node == nullptr)
     {
-        if(node->left != nullptr)
-        {
-            if(node->left == data)
-            {
-                Node<T>* temp = node->left;
-                node = remove(data, node->left);
-                return temp;
-            }
-            else
-            {
-                return remove(data, node->left);
-            }
-        }
-        else
-        {
-            return nullptr;
-        }
-
+        return nullptr;
+    }
+    else if(data < node->data)
+    {
+        node->left = remove(data, node->left);
     }
     else if(data > node->data)
     {
-        if(node->right != nullptr)
-        {
-            if(node->right == data)
-            {
-                Node<T>* temp = node->right;
-                node = remove(data, node->right);
-                return temp;
-            }
-            else
-            {
-                return remove(data, node->right);
-            }
-
-        }
-        else
-        {
-            return nullptr;
-        }
+        node->right = remove(data, node->right);
     }
     else
     {
-        if( (node->left == nullptr) && (node->left == nullptr) )
+        if( (node->left == nullptr) && (node->right == nullptr) )
         {
-            return nullptr;
+            delete node;
+            node = nullptr;
         }
         else if(node->left == nullptr)
         {
-            return node->right;
+            Node<T>* temp = node;
+            node = node->right;
+            delete temp;
         }
         else if(node->right == nullptr)
         {
-            return node->left;
+            Node<T>* temp = node;
+            node = node->left;
+            delete temp;
         }
         else
         {
-            return node;
+            Node<T>* temp = findMin(node->right);
+            node->data = temp->data;
+            node = remove(temp->data, node->right);
         }
     }
+
+    return node;
+}
+
+template<typename T>
+Node<T>* BBST<T>::findMin(Node<T>* node)
+{
+    while(node->left != nullptr)
+    {
+        node = node->left;
+    }
+
+    return node;
+}
+
+template<typename T>
+Node<T>* BBST<T>::findMax(Node<T>* node)
+{
+    Node<T> current = node;
+
+    while(node->right != nullptr)
+    {
+        node = node->right;
+    }
+
+    return node;
 }
 
 template<typename T>
@@ -267,34 +267,6 @@ bool BBST<T>::search(const T& data, Node<T>* node)
     }
 }
 
-template<typename T>
-T BBST<T>::findMax(Node<T>* node)
-{
-    Node<T> current = node;
-
-    while(node != nullptr)
-    {
-        node = node->right;
-    }
-
-    return node->data;
-}
-
-template<typename T>
-T BBST<T>::findMin(Node<T>* node)
-{
-    Node<T> current = node;
-
-    while(node != nullptr)
-    {
-        node = node->left;
-    }
-
-    return node->data;
-}
-
-
-
 int main()
 {
     BBST<int> tree;
@@ -312,6 +284,12 @@ int main()
     tree.print_sorted();
 
     std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
+
+    tree.remove(12);
+    tree.remove(8);
+    tree.remove(5);
+
+    tree.print_sorted();
 
     std::cout << "Good" << std::endl;
 
