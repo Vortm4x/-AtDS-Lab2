@@ -34,6 +34,7 @@ private:
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
+    Node<T>* findSecondLargest(Node<T>* node);
 
 public:
     BBST();
@@ -87,6 +88,33 @@ public:
     T sumKeys()
     {
         return sumKeys(root);
+    }
+
+    T findSecondLargest()
+    {
+        if(root != nullptr)
+        {
+            if(root->right != nullptr)
+            {
+                Node<T>* node = findSecondLargest(root);
+                return node->data;
+            }
+            else
+            {
+                if(root->left != nullptr)
+                {
+                    return root->left->data;
+                }
+                else
+                {
+                    return T();
+                }
+            }
+        }
+        else
+        {
+            return T();
+        }
     }
 };
 
@@ -280,6 +308,18 @@ T BBST<T>::sumKeys(Node<T>* node)
     }
 }
 
+template<typename T>
+Node<T>* BBST<T>::findSecondLargest(Node<T>* node)
+{
+    Node<T>* current = node;
+
+    while(current->right->right != nullptr)
+    {
+        current = current->right;
+    }
+
+    return current;
+}
 
 template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
@@ -338,6 +378,8 @@ int main()
 
     std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
 
+    std::cout << tree.findSecondLargest() << '\n';
+
     tree.remove(12);
     tree.remove(8);
     tree.remove(5);
@@ -345,6 +387,7 @@ int main()
     tree.print_sorted();
     std::cout << tree.countNode() << '\n';
     std::cout << tree.sumKeys() << '\n';
+    std::cout << tree.findSecondLargest() << '\n';
 
     std::cout << "Good" << std::endl;
 
