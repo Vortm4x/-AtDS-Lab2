@@ -30,7 +30,8 @@ private:
     void add(const T& data, Node<T>* node);
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
-    int countNodes(Node<T>* node);
+    int countNode(Node<T>* node);
+    T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
 
@@ -78,9 +79,14 @@ public:
         std::cout << std::endl;
     }
 
-    int countNodes()
+    int countNode()
     {
-        return countNodes(root);
+        return countNode(root);
+    }
+
+    T sumKeys()
+    {
+        return sumKeys(root);
     }
 };
 
@@ -235,17 +241,17 @@ Node<T>* BBST<T>::findMax(Node<T>* node)
 }
 
 template<typename T>
-int BBST<T>::countNodes(Node<T>* node)
+int BBST<T>::countNode(Node<T>* node)
 {
     if(node != nullptr)
     {
         if(node->left != nullptr)
         {
-            return 1 + countNodes(node->left) + countNodes(node->right);
+            return 1 + countNode(node->left) + countNode(node->right);
         }
         else
         {
-            return countNodes(node->right);
+            return countNode(node->right);
         }
     }
     else
@@ -253,6 +259,27 @@ int BBST<T>::countNodes(Node<T>* node)
         return 0;
     }
 }
+
+template<typename T>
+T BBST<T>::sumKeys(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        if(node->right != nullptr)
+        {
+            return node->right->data + sumKeys(node->left) + sumKeys(node->right);
+        }
+        else
+        {
+            return sumKeys(node->left);
+        }
+    }
+    else
+    {
+        return T();
+    }
+}
+
 
 template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
@@ -316,7 +343,8 @@ int main()
     tree.remove(5);
 
     tree.print_sorted();
-    std::cout << tree.countNodes() << '\n';
+    std::cout << tree.countNode() << '\n';
+    std::cout << tree.sumKeys() << '\n';
 
     std::cout << "Good" << std::endl;
 
