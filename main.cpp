@@ -35,6 +35,7 @@ private:
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
+    void insert(Node<T>* node);
     inline T abs(const T& data)
     {
         return (data < 0) ? -data : data;
@@ -52,6 +53,12 @@ public:
     {
         this->root = initChain(other.root);
     }
+
+    void insert(const BBST<T>& other)
+    {
+        insert(other.root);
+    }
+
     void remove(const T& data)
     {
         root = remove(data, root);
@@ -435,6 +442,17 @@ bool BBST<T>::search(const T& data, Node<T>* node)
     }
 }
 
+template<typename T>
+void BBST<T>::insert(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        this->add(node->data);
+        insert(node->left);
+        insert(node->right);
+    }
+}
+
 void testCopy(BBST<int> tree)
 {
     tree.print_sorted();
@@ -475,8 +493,8 @@ int main()
 
     testCopy(tree);
 
-    copied.print_sorted();
-
+    tree.insert(copied);
+    tree.print_sorted();
 
     std::cout << "Good" << std::endl;
 
