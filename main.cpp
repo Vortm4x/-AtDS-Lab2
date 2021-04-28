@@ -31,6 +31,7 @@ private:
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
     Node<T>* initChain(Node<T>* node);
+    bool compare(Node<T>* a, Node<T>* b);
     int countNode(Node<T>* node);
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
@@ -52,6 +53,16 @@ public:
     BBST<T> operator =(const BBST<T>& other)
     {
         this->root = initChain(other.root);
+    }
+
+    bool operator ==(const BBST<T>& other)
+    {
+        return compare(root, other.root);
+    }
+
+    bool operator !=(const BBST<T>& other)
+    {
+        return !(*this == other);
     }
 
     void insert(const BBST<T>& other)
@@ -109,34 +120,7 @@ public:
         return sumKeys(root);
     }
 
-    T findSecondLargest()
-    {
-        if(root != nullptr)
-        {
-            if(root->right != nullptr)
-            {
-                Node<T>* node = findSecondLargest(root);
-                return node->data;
-            }
-            else
-            {
-                if(root->left != nullptr)
-                {
-                    return root->left->data;
-                }
-                else
-                {
-                    return T();
-                }
-            }
-        }
-        else
-        {
-            return T();
-        }
-    }
-
-
+    T findSecondLargest();
 };
 
 // -------------------------------------------------------------------------
@@ -318,6 +302,34 @@ Node<T>* BBST<T>::findMax(Node<T>* node)
 }
 
 template<typename T>
+T BBST<T>::findSecondLargest()
+{
+    if(root != nullptr)
+    {
+        if(root->right != nullptr)
+        {
+            Node<T>* node = findSecondLargest(root);
+            return node->data;
+        }
+        else
+        {
+            if(root->left != nullptr)
+            {
+                return root->left->data;
+            }
+            else
+            {
+                return T();
+            }
+        }
+    }
+    else
+    {
+        return T();
+    }
+}
+
+template<typename T>
 int BBST<T>::countNode(Node<T>* node)
 {
     if(node != nullptr)
@@ -453,6 +465,30 @@ void BBST<T>::insert(Node<T>* node)
     }
 }
 
+template<typename T>
+bool BBST<T>::compare(Node<T>* a, Node<T>* b)
+{
+    if((a != nullptr) && (b != nullptr))
+    {
+        if(a->data == b->data)
+        {
+            return compare(a->left, b->left) && compare(a->right, b->right);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if((a == nullptr) && (b == nullptr))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void testCopy(BBST<int> tree)
 {
     tree.print_sorted();
@@ -493,8 +529,12 @@ int main()
 
     testCopy(tree);
 
+    std::cout << (copied == tree) << ' ' << (copied != tree) << '\n';
     tree.insert(copied);
+    std::cout << (copied == tree) << ' ' << (copied != tree) << '\n';
+
     tree.print_sorted();
+    copied.print_sorted();
 
     std::cout << "Good" << std::endl;
 
