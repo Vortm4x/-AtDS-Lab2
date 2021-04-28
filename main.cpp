@@ -28,7 +28,7 @@ private:
     void destroy(Node<T>* node);
     void print_ascending(Node<T>* node);
     void print_descending(Node<T>* node);
-    void add(const T& data, Node<T>* node);
+    Node<T>* add(const T& data, Node<T>* node);
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
     Node<T>* initChain(Node<T>* node);
@@ -101,16 +101,7 @@ public:
 
     void add(const T& data)
     {
-        if(isEmpty())
-        {
-            root = new Node<T>(data);
-        }
-        else
-        {
-            add(data, root);
-        }
-
-        //balance
+        root = add(data, root);
     }
 
     bool isEmpty()
@@ -231,30 +222,48 @@ void BBST<T>::clear()
 template<typename T>
 void BBST<T>::add(const T& data, Node<T>* node)
 {
-    if(data < node->data)
+    if(node == nullptr)
     {
-        if(node->left == nullptr)
-        {
-            node->left = new Node<T>(data);
-        }
-        else
-        {
-            add(data, node->left);
-        }
+        return new Node<T>(data);
+    }
+    else if(data < node->data)
+    {
+        node->left = add(data, node->left);
     }
     else if(data > node->data)
     {
-        if(node->right == nullptr)
-        {
-            node->right = new Node<T>(data);
-        }
-        else
-        {
-            add(data, node->right);
-        }
+        node->right = add(data, node->right);
+    }
+    else
+    {
+        return node;
     }
 
     heightUpdate(node);
+
+    if ((balance(node) > 1) && (data < node->left->data))
+    {
+        return rightRotation(node);
+    }
+
+    if ((balance(node) < -1) && (data > node->right->data))
+    {
+        return leftRotation(node);
+    }
+
+    if ((balance(node) > 1) && (data > node->left->data))
+    {
+        node->left = leftRotation(node->left);
+        return rightRotation(node);
+    }
+
+    if ((balance(node) < -1) && (data < node->right->data))
+    {
+        node->right = rightRotation(node->right);
+        return leftRotation(node);
+    }
+
+    return node;
 }
 
 template<typename T>
@@ -267,12 +276,10 @@ Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
     else if(data < node->data)
     {
         node->left = remove(data, node->left);
-        heightUpdate(node);
     }
     else if(data > node->data)
     {
         node->right = remove(data, node->right);
-        heightUpdate(node);
     }
     else
     {
@@ -298,8 +305,35 @@ Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
             Node<T>* temp = findMin(node->right);
             node->data = temp->data;
             node->right = remove(temp->data, node->right);
-            heightUpdate(node);
         }
+    }
+
+    if(node == nullptr)
+    {
+        return nullptr;
+    }
+
+
+    if((balance(node) > 1) && (balance(node->left) >= 0))
+    {
+        return rightRotation(node);
+    }
+
+    if((balance(node) > 1) && (balance(node->left) < 0))
+    {
+        node->left = leftRotation(node->left);
+        return rightRotation(node);
+    }
+
+    if((balance(node) < -1) && (balance(node->right) <= 0))
+    {
+        return leftRotation(node);
+    }
+
+    if((balance(node) < -1) && (balance(node->right) > 0))
+    {
+        node->right = rightRotation(node->right);
+        return leftRotation(node);
     }
 
     return node;
