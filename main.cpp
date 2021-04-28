@@ -30,6 +30,7 @@ private:
     void add(const T& data, Node<T>* node);
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
+    Node<T>* initChain(Node<T>* node);
     int countNode(Node<T>* node);
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
@@ -43,6 +44,7 @@ private:
 
 public:
     BBST();
+    BBST(const BBST& tree);
     ~BBST();
     void clear();
     T findMiddle();
@@ -149,6 +151,16 @@ BBST<T>::BBST()
 }
 
 // ------------------
+//  BBST<T>::BBST()
+//  BBST constructor
+// ------------------
+template<typename T>
+BBST<T>::BBST(const BBST& tree)
+{
+    this->root = initChain(tree.root);
+}
+
+// ------------------
 //  BBST<T>::~BBST()
 //  BBST constructor
 // ------------------
@@ -156,6 +168,24 @@ template<typename T>
 BBST<T>::~BBST()
 {
     destroy(root);
+}
+
+// -------------------------------------------
+//  Node<T>* BBST<T>::initChain(Node<T>* node)
+//  Return a copy of a subtree
+// -------------------------------------------
+template<typename T>
+Node<T>* BBST<T>::initChain(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        return new Node<T>(node->data, initChain(node->left), initChain(node->right));
+    }
+    else
+    {
+        return nullptr;
+    }
+
 }
 
 // ----------------------------------------
@@ -401,6 +431,11 @@ bool BBST<T>::search(const T& data, Node<T>* node)
     }
 }
 
+void testCopy(BBST<int> tree)
+{
+    tree.print_sorted();
+}
+
 int main()
 {
     BBST<int> tree;
@@ -431,7 +466,7 @@ int main()
     std::cout << tree.sumKeys() << '\n';
     std::cout << tree.findSecondLargest() << '\n';
 
-
+    testCopy(tree);
 
 
     std::cout << "Good" << std::endl;
