@@ -11,6 +11,7 @@ struct Node
 	Node<T>* left;
 	Node<T>* right;
 	T data;
+	int height;
 
 	Node(const T& data = T(), Node<T> *const left = nullptr, Node<T> *const right = nullptr);
 };
@@ -37,6 +38,17 @@ private:
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
     void insert(Node<T>* node);
+
+    inline void heightUpdate(Node<T>* node)
+    {
+        node->height = 1 + (( height(node->left) > height(node->right) ) ? height(node->left) : height(node->right) );
+    }
+
+    inline int height(Node<T>* node)
+    {
+        return (node == nullptr) ? 0 : node->height;
+    }
+
     inline T abs(const T& data)
     {
         return (data < 0) ? -data : data;
@@ -63,6 +75,11 @@ public:
     bool operator !=(const BBST<T>& other)
     {
         return !(*this == other);
+    }
+
+    inline int height()
+    {
+        return height(root);
     }
 
     void insert(const BBST<T>& other)
@@ -133,6 +150,7 @@ Node<T>::Node(const T& data, Node<T> *const left, Node<T> *const right)
     this->data = data;
     this->left = left;
     this->right = right;
+    this->height = 1;
 }
 
 // ------------------
@@ -230,6 +248,8 @@ void BBST<T>::add(const T& data, Node<T>* node)
             add(data, node->right);
         }
     }
+
+    heightUpdate(node);
 }
 
 template<typename T>
@@ -242,10 +262,12 @@ Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
     else if(data < node->data)
     {
         node->left = remove(data, node->left);
+        heightUpdate(node);
     }
     else if(data > node->data)
     {
         node->right = remove(data, node->right);
+        heightUpdate(node);
     }
     else
     {
@@ -270,7 +292,8 @@ Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
         {
             Node<T>* temp = findMin(node->right);
             node->data = temp->data;
-            node = remove(temp->data, node->right);
+            node->right = remove(temp->data, node->right);
+            heightUpdate(node);
         }
     }
 
@@ -497,7 +520,6 @@ void testCopy(BBST<int> tree)
 int main()
 {
     BBST<int> tree;
-
     tree.add(10);
 
     for(int i = 1; i < 4; ++i)
@@ -506,35 +528,11 @@ int main()
         tree.add(10 - i);
     }
 
-    BBST<int> copied = tree;
-    copied.print_sorted();
-
-    tree.add(10);
-
     tree.print_sorted();
 
-    std::cout << tree.search(16) << ' ' << tree.search(8) << std::endl;
-
-    std::cout << tree.findSecondLargest() << '\n';
-    std::cout << tree.findMiddle() << '\n';
-
-    tree.remove(12);
-    tree.remove(8);
-    tree.remove(5);
+    tree.remove(10);
 
     tree.print_sorted();
-    std::cout << tree.countNode() << '\n';
-    std::cout << tree.sumKeys() << '\n';
-    std::cout << tree.findSecondLargest() << '\n';
-
-    testCopy(tree);
-
-    std::cout << (copied == tree) << ' ' << (copied != tree) << '\n';
-    tree.insert(copied);
-    std::cout << (copied == tree) << ' ' << (copied != tree) << '\n';
-
-    tree.print_sorted();
-    copied.print_sorted();
 
     std::cout << "Good" << std::endl;
 
