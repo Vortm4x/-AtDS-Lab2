@@ -39,6 +39,11 @@ private:
     Node<T>* findMax(Node<T>* node);
     void insert(Node<T>* node);
 
+    inline int balance(Node<T>* node)
+    {
+        return (node == nullptr) ? 0 : height(node->left) - height(node->right);
+    }
+
     inline void heightUpdate(Node<T>* node)
     {
         node->height = 1 + (( height(node->left) > height(node->right) ) ? height(node->left) : height(node->right) );
