@@ -48,6 +48,10 @@ public:
     ~BBST();
     void clear();
     T findMiddle();
+    BBST<T> operator =(const BBST<T>& other)
+    {
+        this->root = initChain(other.root);
+    }
     void remove(const T& data)
     {
         root = remove(data, root);
@@ -448,6 +452,9 @@ int main()
         tree.add(10 - i);
     }
 
+    BBST<int> copied = tree;
+    copied.print_sorted();
+
     tree.add(10);
 
     tree.print_sorted();
@@ -467,6 +474,8 @@ int main()
     std::cout << tree.findSecondLargest() << '\n';
 
     testCopy(tree);
+
+    copied.print_sorted();
 
 
     std::cout << "Good" << std::endl;
