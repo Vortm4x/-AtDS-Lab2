@@ -41,6 +41,7 @@ private:
     Node<T>* leftRotation(Node<T>* x);
     Node<T>* rightRotation(Node<T>* y);
     void insert(Node<T>* node);
+    Node<T>* deleteEven(Node<T>* node);
 
     inline int balance(Node<T>* node)
     {
@@ -70,6 +71,7 @@ public:
     ~BBST();
     void clear();
     T findMiddle();
+
     BBST<T> operator =(const BBST<T>& other)
     {
         this->root = initChain(other.root);
@@ -83,6 +85,11 @@ public:
     bool operator !=(const BBST<T>& other)
     {
         return !(*this == other);
+    }
+
+    void deleteEven()
+    {
+        root = deleteEven(root);
     }
 
     void inverse()
@@ -127,11 +134,19 @@ public:
 
     void print_sorted()
     {
-        print_ascending(root);
-        std::cout << std::endl;
+        if(root != nullptr)
+        {
+            print_ascending(root);
+            std::cout << '\n';
 
-        print_descending(root);
-        std::cout << std::endl;
+            print_descending(root);
+            std::cout << '\n';
+        }
+        else
+        {
+            std::cout << "<Empty>\n<Empty>\n";
+        }
+
     }
 
     int countNode()
@@ -532,6 +547,23 @@ T BBST<T>::findMiddle()
 }
 
 template<typename T>
+Node<T>* BBST<T>::deleteEven(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        node->left = deleteEven(node->left);
+        node->right = deleteEven(node->right);
+
+        while((node != nullptr) && (node->data % 2 == 0))
+        {
+            node = remove(node->data, node);
+        }
+    }
+
+    return node;
+}
+
+template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
 {
     if(node != nullptr)
@@ -617,13 +649,14 @@ int main()
 
     for(int i = 1; i < 4; ++i)
     {
-        tree.add(10 + i);
-        tree.add(10 - i);
+        tree.add(10 + 2 * i);
+        tree.add(10 - 2 * i);
     }
 
     tree.print_sorted();
 
-    tree.inverse();
+    //tree.remove(10);
+    tree.deleteEven();
 
     tree.print_sorted();
 
