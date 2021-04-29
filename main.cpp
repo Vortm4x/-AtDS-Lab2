@@ -32,6 +32,7 @@ private:
     Node<T>* remove(const T& data, Node<T>* node);
     bool search(const T& data, Node<T>* node);
     Node<T>* initChain(Node<T>* node);
+    void inverse(Node<T>* node);
     bool compare(Node<T>* a, Node<T>* b);
     int countNode(Node<T>* node);
     T sumKeys(Node<T>* node);
@@ -82,6 +83,11 @@ public:
     bool operator !=(const BBST<T>& other)
     {
         return !(*this == other);
+    }
+
+    void inverse()
+    {
+        inverse(root);
     }
 
     inline int height()
@@ -194,7 +200,20 @@ Node<T>* BBST<T>::initChain(Node<T>* node)
     {
         return nullptr;
     }
+}
 
+template<typename T>
+void BBST<T>::inverse(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        inverse(node->left);
+        inverse(node->right);
+
+        Node<T>* temp = node->left;
+        node->left = node->right;
+        node->right = temp;
+    }
 }
 
 // ----------------------------------------
@@ -599,7 +618,7 @@ int main()
 
     tree.print_sorted();
 
-    tree.remove(10);
+    tree.inverse();
 
     tree.print_sorted();
 
