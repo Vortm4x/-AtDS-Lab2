@@ -44,6 +44,7 @@ private:
     void insert(Node<T>* node);
     Node<T>* deleteEven(Node<T>* node);
     void pathTo(std::vector<Node<T>*>& path, T data);
+    bool contains(Node<T>* node);
 
     inline int balance(Node<T>* node)
     {
@@ -87,6 +88,11 @@ public:
     bool operator !=(const BBST<T>& other)
     {
         return !(*this == other);
+    }
+
+    bool contains(const BBST<T>& other)
+    {
+        return contains(other.root);
     }
 
     void deleteEven()
@@ -699,6 +705,19 @@ bool BBST<T>::compare(Node<T>* a, Node<T>* b)
     }
 }
 
+template<typename T>
+bool BBST<T>::contains(Node<T>* node)
+{
+    if(node != nullptr)
+    {
+        return search(node->data) && contains(node->left) && contains(node->right);
+    }
+    else
+    {
+        return true;
+    }
+}
+
 void testCopy(BBST<int> tree)
 {
     tree.print_sorted();
@@ -709,15 +728,17 @@ int main()
     BBST<int> tree;
     tree.add(10);
 
-    for(int i = 1; i < 4; ++i)
+    for(int i = 1; i < 10; ++i)
     {
-        tree.add(10 + 2 * i);
-        tree.add(10 - 2 * i);
+        tree.add(10 + i);
+        tree.add(10 - i);
     }
 
-    tree.print_sorted();
+    BBST<int> copied = tree;
 
-    std::cout << tree.commonAncestor(6, 10) << '\n';
+    std::cout << tree.contains(copied) << '\n';
+    tree.remove(10);
+    std::cout << tree.contains(copied) << '\n';
 
     std::cout << "Good" << std::endl;
 
