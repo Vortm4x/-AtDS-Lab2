@@ -95,6 +95,11 @@ public:
         return height(root);
     }
 
+    T fatherNode()
+    {
+        return (root != nullptr) ? root->data : T();
+    }
+
     void insert(const BBST<T>& other)
     {
         insert(other.root);
@@ -621,6 +626,8 @@ int main()
     tree.inverse();
 
     tree.print_sorted();
+
+    std::cout << tree.fatherNode() << '\n';
 
     std::cout << "Good" << std::endl;
 
