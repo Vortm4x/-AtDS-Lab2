@@ -37,6 +37,8 @@ private:
     T sumKeys(Node<T>* node);
     Node<T>* findMin(Node<T>* node);
     Node<T>* findMax(Node<T>* node);
+    Node<T>* leftRotation(Node<T>* x);
+    Node<T>* rightRotation(Node<T>* y);
     void insert(Node<T>* node);
 
     inline int balance(Node<T>* node)
@@ -95,8 +97,6 @@ public:
     void remove(const T& data)
     {
         root = remove(data, root);
-
-        //balance
     }
 
     void add(const T& data)
@@ -220,7 +220,7 @@ void BBST<T>::clear()
 }
 
 template<typename T>
-void BBST<T>::add(const T& data, Node<T>* node)
+Node<T>* BBST<T>::add(const T& data, Node<T>* node)
 {
     if(node == nullptr)
     {
@@ -337,6 +337,36 @@ Node<T>* BBST<T>::remove(const T& data, Node<T>* node)
     }
 
     return node;
+}
+
+template<typename T>
+Node<T>* BBST<T>::leftRotation(Node<T>* x)
+{
+    Node<T>* y = x->right;
+    Node<T>* z = y->left;
+
+    y->left = x;
+    x->right = z;
+
+    heightUpdate(x);
+    heightUpdate(y);
+
+    return y;
+}
+
+template<typename T>
+Node<T>* BBST<T>::rightRotation(Node<T>* y)
+{
+    Node<T>* x = y->left;
+    Node<T>* z = x->right;
+
+    x->right = y;
+    y->left = z;
+
+    heightUpdate(y);
+    heightUpdate(x);
+
+    return x;
 }
 
 template<typename T>
