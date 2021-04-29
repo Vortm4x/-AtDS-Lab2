@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 // ---------------------------
 //  struct Node<T>
@@ -42,6 +43,7 @@ private:
     Node<T>* rightRotation(Node<T>* y);
     void insert(Node<T>* node);
     Node<T>* deleteEven(Node<T>* node);
+    void pathTo(std::vector<Node<T>*>& path, T data);
 
     inline int balance(Node<T>* node)
     {
@@ -160,6 +162,7 @@ public:
     }
 
     T findSecondLargest();
+    T commonAncestor(const T& a, const T& b);
 };
 
 // -------------------------------------------------------------------------
@@ -563,6 +566,65 @@ Node<T>* BBST<T>::deleteEven(Node<T>* node)
     return node;
 }
 
+
+template<typename T>
+T BBST<T>::commonAncestor(const T& a, const T& b)
+{
+    std::vector<Node<T>*> pathA ;
+    pathTo(pathA, a);
+    std::vector<Node<T>*> pathB;
+    pathTo(pathB, b);
+
+    if(pathA.empty() || pathB.empty())
+    {
+        return T();
+    }
+    else
+    {
+        size_t i = 0;
+
+        for(; i < pathA.size() && i < pathB.size(); ++i)
+        {
+            if(pathA[i] != pathB[i])
+            {
+                break;
+            }
+        }
+
+        return (pathA[i - 1])->data;
+    }
+}
+
+template<typename T>
+void BBST<T>::pathTo(std::vector<Node<T>*>& path, T data)
+{
+    Node<T>* node = root;
+
+    while(node != nullptr)
+    {
+        path.push_back(node);
+
+        if(data < node->data)
+        {
+            node = node->left;
+        }
+        else if(data > node->data)
+        {
+            node = node->right;
+        }
+        else
+        {
+            path.pop_back();
+            break;
+        }
+    }
+
+    if(node == nullptr)
+    {
+        path.clear();
+    }
+}
+
 template<typename T>
 void BBST<T>::print_ascending(Node<T>* node)
 {
@@ -655,12 +717,7 @@ int main()
 
     tree.print_sorted();
 
-    //tree.remove(10);
-    tree.deleteEven();
-
-    tree.print_sorted();
-
-    std::cout << tree.fatherNode() << '\n';
+    std::cout << tree.commonAncestor(6, 10) << '\n';
 
     std::cout << "Good" << std::endl;
 
